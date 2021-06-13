@@ -10,6 +10,8 @@ import com.debtstracker.dtv3.repositories.UserRepository;
 import lombok.SneakyThrows;
 import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.context.event.ApplicationStartedEvent;
+import org.springframework.context.event.EventListener;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -29,6 +31,26 @@ public class DTServiceImpl implements DTService {
     public DTServiceImpl(UserRepository userRepository, DebtRepository debtRepository) {
         this.userRepository = userRepository;
         this.debtRepository = debtRepository;
+    }
+
+    @EventListener(ApplicationStartedEvent.class)
+    public void insertUsers() {
+        User sebee = User.builder()
+                .username("sebee")
+                .password("Parola123")
+                .name("Sebi Teodorescu")
+                .build();
+
+        User anca = User.builder()
+                .username("anca22")
+                .password("Parola22")
+                .name("Anca Dobrescu")
+                .build();
+
+        if (!userRepository.existsByUsername(sebee.getUsername()))
+            userRepository.save(sebee);
+        if (!userRepository.existsByUsername(anca.getUsername()))
+            userRepository.save(anca);
     }
 
     @SneakyThrows
